@@ -1,28 +1,63 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app" class="container">
+      <app-header :max="maxQuote" :quoteLength="quotes.length"></app-header>
+      <div class="alert alert-warning" v-if="showAlert"><p>Please Delete Some Quotes Before Adding More</p></div>
+      <app-newquote @sendQuote="addNewQuote"></app-newquote>
+      <app-quotegrid :allQuote="quotes" @delete="quoteDelete"></app-quotegrid>
+    </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
 
+<script>
+import  QuoteGrid from './components/QuoteGrid';
+import NewQuote from './components/NewQuote';
+import Header from './components/Header'
 export default {
-  name: 'App',
+  name: 'app',
+  data(){
+    return {
+      quotes:[
+        {author: 'Mista_Zidane', quote: 'I love Food'},
+        {author: 'Joy', quote: 'I am in class'},
+        {author: 'Fadimatou', quote: 'Je suis en classe'},
+        {author: 'Rene', quote: 'We love to code'},
+        {author: 'D-Karl', quote: 'When you are hungry code'}
+      ],
+      maxQuote: 8,
+      showAlert: false
+    }
+  },
   components: {
-    HelloWorld
-  }
+    'app-quotegrid': QuoteGrid,
+    'app-newquote': NewQuote,
+    'app-header': Header
+  },
+   methods: {
+     addNewQuote(quote){
+       if(this.quotes.length < this.maxQuote){
+         this.quotes.push(quote)
+       }
+     },
+     quoteDelete(ind){
+       this.quotes.splice(ind,1)
+     }
+   },
+   watch: {
+     quotes: function(value){
+       if(value.length == this.maxQuote){
+         this.showAlert = true;
+       }else {
+         this.showAlert = false;
+       }
+     }
+   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+p {
+  font-weight: bold;
 }
+
 </style>
